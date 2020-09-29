@@ -73,4 +73,15 @@ class QRCodeReader {
     };
     return await _channel.invokeMethod('readQRCode', params);
   }
+  Future<String> imageOnly() async {
+    Map params = <String, dynamic>{
+      "autoFocusIntervalInMs": _autoFocusIntervalInMs,
+      "forceAutoFocus": _forceAutoFocus,
+      "torchEnabled": _torchEnabled,
+      "handlePermissions": _handlePermissions,
+      "executeAfterPermissionGranted": _executeAfterPermissionGranted,
+      "frontCamera": _frontCamera,
+    };
+    return await _channel.invokeMethod('imageOnly', params);
+  }
 }

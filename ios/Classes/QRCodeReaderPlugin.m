@@ -48,7 +48,10 @@ float portraitheight;
     } else if ([@"readQRCode" isEqualToString:call.method]) {
         [self showQRCodeView:call];
         _result = result;
-    } else if ([@"stopReading" isEqualToString:call.method]) {
+    } else if ([@"onlyImage" isEqualToString:call.method]) {
+        [self showCameraView:call];
+        _result = result;
+    }else if ([@"stopReading" isEqualToString:call.method]) {
         [self stopReading];
         result(@"stopped");
     }else {
@@ -86,6 +89,21 @@ float portraitheight;
     [self startReading];
 }
 
+- (void)showCameraView:(FlutterMethodCall*)call {
+    _qrcodeViewController = [[UIViewController alloc] init];
+    [_viewController presentViewController:_qrcodeViewController animated:NO completion:nil];
+
+    if (@available(iOS 13.0, *)) {
+        [_qrcodeViewController setModalInPresentation:(true) ];
+        // [_qrcodeViewController setModalPresentationStyle:(UIModalPresentationFullScreen) ];
+    } else {
+        // Fallback on earlier versions
+    }
+
+    [self loadViewQRCode];
+    [self viewQRCodeDidLoad];
+}
+
 
 - (void)closeQRCodeView {
     [_qrcodeViewController dismissViewControllerAnimated:YES completion:^{
@@ -97,10 +115,10 @@ float portraitheight;
 -(void)loadViewQRCode {
     portraitheight = height = [UIScreen mainScreen].applicationFrame.size.height;
     landscapeheight = width = [UIScreen mainScreen].applicationFrame.size.width;
-    if(UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation])){
-        landscapeheight = height;
-        portraitheight = width;
-    }
+    // if(UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation])){
+    //     landscapeheight = height;
+    //     portraitheight = width;
+    // }
     _qrcodeview= [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height) ];
     _qrcodeview.opaque = NO;
     _qrcodeview.backgroundColor = [UIColor whiteColor];
