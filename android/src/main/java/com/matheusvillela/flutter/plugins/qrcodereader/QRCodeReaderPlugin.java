@@ -101,6 +101,35 @@ public class QRCodeReaderPlugin implements MethodCallHandler, ActivityResultList
             } else {
                 startView();
             }
+        }else if (call.method.equals("imageOnly")) {
+            if (!(call.arguments instanceof Map)) {
+                throw new IllegalArgumentException("Plugin not passing a map as parameter: " + call.arguments);
+            }
+            arguments = (Map<String, Object>) call.arguments;
+            boolean handlePermission = (boolean) arguments.get("handlePermissions");
+            this.executeAfterPermissionGranted = (boolean) arguments.get("executeAfterPermissionGranted");
+
+            if (checkSelfPermission(activity,
+                    Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED) {
+                if (shouldShowRequestPermissionRationale(activity,
+                        Manifest.permission.CAMERA)) {
+                    // TODO: user should be explained why the app needs the permission
+                    if (handlePermission) {
+                        requestPermissions();
+                    } else {
+                        setNoPermissionsError();
+                    }
+                } else {
+                    if (handlePermission) {
+                        requestPermissions();
+                    } else {
+                        setNoPermissionsError();
+                    }
+                }
+            } else {
+                startView();
+            }
         } else {
             throw new IllegalArgumentException("Unknown method " + call.method);
         }
